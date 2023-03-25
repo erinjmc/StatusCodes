@@ -2,6 +2,8 @@
 {
     public interface IStatusRepository
     {
-        Task<IEnumerable<StatusCode>> GetCodesAsync();
+        Task<IEnumerable<StatusCode>> GetCodes();
+        Task<IEnumerable<User>> GetUsers();
+        Task<User> GetUser(int id);
     }
 }

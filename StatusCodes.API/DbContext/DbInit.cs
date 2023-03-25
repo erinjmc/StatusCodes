@@ -31,6 +31,11 @@ namespace StatusCodes.API.DbContext
                             }
                         }
                     }
+                    //if (!context.users.any())
+                    //{
+                    //    context.users.add(new user { firstname = "amin", lastname = "admin", email = "admin@business.com"});
+                    //    context.savechanges();
+                    //}
                 }
             }
             catch (Exception ex)
