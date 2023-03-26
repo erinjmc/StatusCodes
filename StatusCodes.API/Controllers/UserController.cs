@@ -24,7 +24,7 @@ namespace StatusCodes.API.Controllers
             var codes = _statusRepository.GetUsers();
             if (codes == null)
             {
-                return NotFound("Record not found!");
+                return NotFound("No users were found!");
             }
             return Ok(codes);
         }
