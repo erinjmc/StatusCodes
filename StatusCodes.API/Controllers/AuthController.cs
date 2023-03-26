@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StatusCodes.API.Models;
 
 namespace StatusCodes.API.Controllers
 {
@@ -6,26 +7,22 @@ namespace StatusCodes.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public class AuthRequestBody 
-        {
-            public string? UserName { get; set; }
-            public string? Password { get; set; }
-        }
+        private readonly IStatusRepository statusRepository;
 
-        [HttpPost("logon")]
-        public ActionResult<string> Logon(AuthRequestBody _authRequestBody)
+        public AuthController(IStatusRepository _statusRepository)
         {
-            var result = ValidateCredentials(_authRequestBody.UserName, _authRequestBody.Password);
-            if (!result)
+            statusRepository = _statusRepository;
+        }
+      
+        [HttpPost]
+        public ActionResult Logon(string username, string password)
+        {
+            var result = statusRepository.ValidateUser(new AuthRequest { UserName = username.ToLower(), Password = password });
+            if (result == String.Empty)
             {
                 return Unauthorized();
             }
             return Ok(result);
-        }
-
-        private bool ValidateCredentials(string? username, string? password)
-        {
-            return true;
         }
     }
 }

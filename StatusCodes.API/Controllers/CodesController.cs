@@ -15,9 +15,9 @@ namespace StatusCodes.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Codes()
+        public ActionResult Codes()
         {
-            var codes = await statusRepository.GetCodes();
+            var codes = statusRepository.GetCodes();
             return Ok(codes);
         }
 

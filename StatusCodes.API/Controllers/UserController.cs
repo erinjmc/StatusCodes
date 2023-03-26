@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StatusCodes.API.Models;
 
+
 namespace StatusCodes.API.Controllers
 {
-    [Route("api/user")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -16,17 +17,28 @@ namespace StatusCodes.API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetUsers()
+        public ActionResult GetUsers()
         {
-            var codes = await statusRepository.GetUsers();
+            var codes = statusRepository.GetUsers();
             return Ok(codes);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetUser(int id)
+        [HttpGet("{username}")]
+        public ActionResult GetUser(string username)
         {
-            var codes = await statusRepository.GetUser(id);
+            var codes = statusRepository.GetUser(username);
+            if (codes == null)
+            {
+                return BadRequest("Record not found!");
+            }
             return Ok(codes);
+        }
+
+        [HttpPost("new")]
+        public ActionResult NewUser(string firstname, string lastname, string email, bool isadmin, string password)
+        {
+            var newuser = statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
+            return Ok(newuser);
         }
     }
 }
