@@ -1,0 +1,436 @@
+{
+	"info": {
+		"_postman_id": "9f74ccf5-e71f-4a9c-9494-48e6650c32b3",
+		"name": "StatusCodes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "405126"
+	},
+	"item": [
+		{
+			"name": "Logon",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"token\", pm.response.body);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:{{port}}/api/logon?username=admin@admin.com&password=password",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"logon"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin@admin.com"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJpc2FkbWluIjoiVHJ1ZSIsIm5iZiI6MTY3OTg1Nzk5NywiZXhwIjoxNjc5ODYxNTk3LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgxIiwiYXVkIjoic3RhdHVzY29kZSJ9.JVaf7-XvDi2SE6xsV4yXUIHcUzzGrtYAMpm_KZj875k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:{{port}}/api/logout",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCodes",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJpc2FkbWluIjoiVHJ1ZSIsIm5iZiI6MTY3OTg1ODExMywiZXhwIjoxNjc5ODYxNzEzLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgxIiwiYXVkIjoic3RhdHVzY29kZSJ9.cMrsXYb6cwcnH-h3gLw1xoMvAmdKgOaTNbZR-IOO7Rw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:{{port}}/api/codes",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"codes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUsers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJpc2FkbWluIjoiVHJ1ZSIsIm5iZiI6MTY3OTg1ODExMywiZXhwIjoxNjc5ODYxNzEzLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgxIiwiYXVkIjoic3RhdHVzY29kZSJ9.cMrsXYb6cwcnH-h3gLw1xoMvAmdKgOaTNbZR-IOO7Rw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{port}}/api/users",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJpc2FkbWluIjoiVHJ1ZSIsIm5iZiI6MTY3OTg0MDE5MCwiZXhwIjoxNjc5ODQzNzkwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgxIiwiYXVkIjoic3RhdHVzY29kZSJ9.XpvsVZeiIObDBfQ7Zu2h29RUapvXj3fWO3DD68PbH94",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{port}}/api/user?username=erinjmc@hotmail.com",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"user"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin@abc.com",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "erinjmc@hotmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NewUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJpc2FkbWluIjoiVHJ1ZSIsIm5iZiI6MTY3OTg1ODExMywiZXhwIjoxNjc5ODYxNzEzLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgxIiwiYXVkIjoic3RhdHVzY29kZSJ9.cMrsXYb6cwcnH-h3gLw1xoMvAmdKgOaTNbZR-IOO7Rw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:{{port}}/api/user/new?firstname=Mary&lastname=Shipington&email=ms@abc.com&isadmin=false&password=password",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"user",
+						"new"
+					],
+					"query": [
+						{
+							"key": "firstname",
+							"value": "Mary"
+						},
+						{
+							"key": "lastname",
+							"value": "Shipington"
+						},
+						{
+							"key": "email",
+							"value": "ms@abc.com"
+						},
+						{
+							"key": "isadmin",
+							"value": "false"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJpc2FkbWluIjoiVHJ1ZSIsIm5iZiI6MTY3OTg0MDE5MCwiZXhwIjoxNjc5ODQzNzkwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgxIiwiYXVkIjoic3RhdHVzY29kZSJ9.XpvsVZeiIObDBfQ7Zu2h29RUapvXj3fWO3DD68PbH94",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:{{port}}/api/user/new?firstname=Mary&lastname=Ship&email=ms@abc.com&isadmin=false&password=password",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"user",
+						"new"
+					],
+					"query": [
+						{
+							"key": "firstname",
+							"value": "Mary"
+						},
+						{
+							"key": "lastname",
+							"value": "Ship"
+						},
+						{
+							"key": "email",
+							"value": "ms@abc.com"
+						},
+						{
+							"key": "isadmin",
+							"value": "false"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJpc2FkbWluIjoiVHJ1ZSIsIm5iZiI6MTY3OTg0MDE5MCwiZXhwIjoxNjc5ODQzNzkwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgxIiwiYXVkIjoic3RhdHVzY29kZSJ9.XpvsVZeiIObDBfQ7Zu2h29RUapvXj3fWO3DD68PbH94",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:{{port}}/api/user?username=ms@abc.com",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"user"
+					],
+					"query": [
+						{
+							"key": "firstname",
+							"value": "Mary",
+							"disabled": true
+						},
+						{
+							"key": "lastname",
+							"value": "Ship",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "ms@abc.com"
+						},
+						{
+							"key": "isadmin",
+							"value": "false",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
