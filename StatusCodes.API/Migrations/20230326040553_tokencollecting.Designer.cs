@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StatusCodes.API.DbContext;
 
@@ -10,9 +11,11 @@ using StatusCodes.API.DbContext;
 namespace StatusCodes.API.Migrations
 {
     [DbContext(typeof(StatusCodesDbContext))]
-    partial class StatusCodesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230326040553_tokencollecting")]
+    partial class tokencollecting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,26 +48,6 @@ namespace StatusCodes.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StatusCodes");
-                });
-
-            modelBuilder.Entity("StatusCodes.API.Models.Token", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TokenStr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tokens");
                 });
 
             modelBuilder.Entity("StatusCodes.API.Models.User", b =>

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StatusCodes.API.DbContext;
 
@@ -10,9 +11,11 @@ using StatusCodes.API.DbContext;
 namespace StatusCodes.API.Migrations
 {
     [DbContext(typeof(StatusCodesDbContext))]
-    partial class StatusCodesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230326045538_tokentable3")]
+    partial class tokentable3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

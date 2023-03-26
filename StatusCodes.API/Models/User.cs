@@ -8,6 +8,6 @@
         public string Email { get; set; }
         public string HashedPassword { get; set; }
         public bool IsAdmin { get; set; }
-        public List<Token> Tokens { get; set; } = new List<Token>();
+        public List<Token> Tokens = new List<Token>();
     }
 }

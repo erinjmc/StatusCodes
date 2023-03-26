@@ -1,34 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StatusCodes.API.Models;
-
+using StatusCodes.API.Services;
 
 namespace StatusCodes.API.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/users")]
+    [Route("api")]
     public class UserController : ControllerBase
     {
-        private readonly IStatusRepository statusRepository;
+        private readonly IStatusRepository _statusRepository;
 
-        public UserController(IStatusRepository _statusRepository)
+        public UserController(IStatusRepository statusRepository)
         {
-            statusRepository = _statusRepository;
+            _statusRepository = statusRepository;
         }
 
 
-        [HttpGet]
+        [HttpGet("users")]
         public ActionResult GetUsers()
         {
-            var codes = statusRepository.GetUsers();
-            return Ok(codes);
-        }
-
-        [HttpGet("{username}")]
-        public ActionResult GetUser(string username)
-        {
-            var codes = statusRepository.GetUser(username);
+            var codes = _statusRepository.GetUsers();
             if (codes == null)
             {
                 return BadRequest("Record not found!");
@@ -36,16 +29,39 @@ namespace StatusCodes.API.Controllers
             return Ok(codes);
         }
 
-        [HttpPost("new")]
+        [HttpGet("user")]
+        public ActionResult GetUser(string username)
+        {
+            var user = _statusRepository.GetUser(username);
+            if (user == null)
+            {
+                return BadRequest("Record not found!");
+            }
+            return Ok(user);
+        }
+
+        [HttpPost("user/new")]
         public ActionResult NewUser(string firstname, string lastname, string email, bool isadmin, string password)
         {
-            if(statusRepository.ValidateUser(new AuthRequest { UserName = email, Password = password }) == String.Empty)
+            if(_statusRepository.ValidateUser(new AuthRequest { UserName = email, Password = password }) == String.Empty)
             {
-                var newuser = statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
+                var newuser = _statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
                 return Ok(newuser);
 
             }
             return BadRequest("A user with that email already exist!");
+        }
+
+        [HttpPut("user")]
+        public ActionResult UpdateUser(User user) 
+        {
+            return Ok();
+        }
+
+        [HttpDelete("user")]
+        public ActionResult DeleteUser(string username)
+        {
+            return Ok();
         }
     }
 }

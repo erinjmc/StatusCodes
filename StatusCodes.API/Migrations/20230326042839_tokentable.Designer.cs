@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StatusCodes.API.DbContext;
 
@@ -10,9 +11,11 @@ using StatusCodes.API.DbContext;
 namespace StatusCodes.API.Migrations
 {
     [DbContext(typeof(StatusCodesDbContext))]
-    partial class StatusCodesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230326042839_tokentable")]
+    partial class tokentable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,11 +58,11 @@ namespace StatusCodes.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .IsRequired()
+                    b.Property<string>("TokenStr")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TokenStr")
+                    b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

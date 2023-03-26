@@ -6,8 +6,9 @@ using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using StatusCodes.API.Models;
 
-namespace StatusCodes.API.Models
+namespace StatusCodes.API.Services
 {
     public class StatusRepository : IStatusRepository
     {
@@ -46,20 +47,34 @@ namespace StatusCodes.API.Models
 
         public string ValidateUser(AuthRequest creds)
         {
-            string token = String.Empty;
-            if (!String.IsNullOrEmpty(creds.Password) && !String.IsNullOrEmpty(creds.UserName))
+            string token = string.Empty;
+            if (!string.IsNullOrEmpty(creds.Password) && !string.IsNullOrEmpty(creds.UserName))
             {
-                var user = _context.Users.FirstOrDefault(u => u.Email == creds.UserName);
+                var user = GetUser(creds.UserName);
 
                 if (user != null)
                 {
                     if (user.HashedPassword == ComputeSha256Hash(creds.Password + creds.UserName))
                     {
                         token = BuildToken(user);
+                        _context.Tokens.Add(new Token { Email = user.Email, TokenStr = token });
+                        _context.SaveChanges();
                     }
                 }
-            }           
+            }
             return token;
+        }
+
+        public bool InvalidateUser(List<Claim> claims)
+        {
+            var username = claims.FirstOrDefault(c => c.Type == "username");
+            var user = GetUser(username.Value.ToString());
+            if (user != null && user.Tokens.Count > 0)
+            {
+                user.Tokens.Clear();
+                return user.Tokens.Count == 0;
+            }
+            return false;
         }
 
         private string ComputeSha256Hash(string hash)

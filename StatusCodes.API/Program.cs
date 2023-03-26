@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using StatusCodes.API.Models;
 using StatusCodes.API.DbContext;
+using StatusCodes.API.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StatusCodes.API.Models;
+using StatusCodes.API.Services;
 
 namespace StatusCodes.API.Controllers
 {
@@ -9,17 +9,17 @@ namespace StatusCodes.API.Controllers
     [Route("api/codes")]
     public class CodesController : ControllerBase
     {
-        private readonly IStatusRepository statusRepository;
+        private readonly IStatusRepository _statusRepository;
 
-        public CodesController(IStatusRepository _statusRepository)
+        public CodesController(IStatusRepository statusRepository)
         {
-            statusRepository = _statusRepository;
+            _statusRepository = statusRepository;
         }
 
         [HttpGet]
         public ActionResult Codes()
         {
-            var codes = statusRepository.GetCodes();
+            var codes = _statusRepository.GetCodes();
             return Ok(codes);
         }
 

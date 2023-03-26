@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StatusCodes.API.Models;
+using System.Security.Claims;
 
-namespace StatusCodes.API.Models
+namespace StatusCodes.API.Services
 {
     public interface IStatusRepository
     {
@@ -9,7 +11,6 @@ namespace StatusCodes.API.Models
         User GetUser(string username);
         User NewUser(User user, string password);
         string ValidateUser(AuthRequest creds);
-        //    string ComputeSha256Hash(string hash);
-        //    Token BuildToken(User user);
+        bool InvalidateUser(List<Claim> claims);
     }
 }

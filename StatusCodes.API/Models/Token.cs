@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StatusCodes.API.Models
 {
     public class Token
     {
-        public string Id { get; set; }
-        public string Hash { get; set; }
-        public string Secret { get; set; }
+        public int Id { get; set; }
+        [ForeignKey("Email")]
+        public string Email { get; set; }
+        public string? TokenStr { get; set; }
     }
 }

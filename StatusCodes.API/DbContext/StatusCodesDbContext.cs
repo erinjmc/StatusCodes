@@ -12,5 +12,6 @@ namespace StatusCodes.API.DbContext
 
         public DbSet<StatusCode> StatusCodes { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Token> Tokens { get; set; }
     }
 }

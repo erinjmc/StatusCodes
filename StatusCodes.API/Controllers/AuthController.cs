@@ -1,28 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StatusCodes.API.Models;
+using StatusCodes.API.Services;
+using System.Security.Claims;
 
 namespace StatusCodes.API.Controllers
 {
-    [Route("api/logon")]
+    [Route("api")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IStatusRepository statusRepository;
+        private readonly IStatusRepository _statusRepository;
 
-        public AuthController(IStatusRepository _statusRepository)
+        public AuthController(IStatusRepository statusRepository)
         {
-            statusRepository = _statusRepository;
+            _statusRepository = statusRepository;
         }
       
-        [HttpPost]
+        [HttpPost("logon")]
         public ActionResult Logon(string username, string password)
         {
-            var result = statusRepository.ValidateUser(new AuthRequest { UserName = username.ToLower(), Password = password });
+            var result = _statusRepository.ValidateUser(new AuthRequest { UserName = username.ToLower(), Password = password });
             if (result == String.Empty)
             {
                 return Unauthorized();
             }
             return Ok(result);
+        }
+
+        [HttpPost("logout")] 
+        public ActionResult Logout()
+        {
+            var claims = User.Claims.ToList();
+            
+            var result = _statusRepository.InvalidateUser(claims);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
         }
     }
 }
