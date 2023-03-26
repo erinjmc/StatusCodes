@@ -12,5 +12,6 @@ namespace StatusCodes.API.Services
         User NewUser(User user, string password);
         string ValidateUser(AuthRequest creds);
         bool InvalidateUser(List<Claim> claims);
+        bool DeleterUser(string email);
     }
 }

@@ -45,6 +45,20 @@ namespace StatusCodes.API.Services
             return user;
         }
 
+        public User UpdateUser(User user)
+        {
+            //todo
+            return user;
+        }
+
+        public bool DeleterUser(string email)
+        {
+            var user = GetUser(email);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return _context.Users.Contains(user);
+        }
+
         public string ValidateUser(AuthRequest creds)
         {
             string token = string.Empty;

@@ -55,13 +55,18 @@ namespace StatusCodes.API.Controllers
         [HttpPut("user")]
         public ActionResult UpdateUser(User user) 
         {
+            var newuser = _statusRepository.UpdateUser(user);
             return Ok();
         }
 
         [HttpDelete("user")]
         public ActionResult DeleteUser(string username)
         {
-            return Ok();
+            if(_statusRepository.DeleterUser(username))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
