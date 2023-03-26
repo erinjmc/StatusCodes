@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StatusCodes.API.Models;
 
 
 namespace StatusCodes.API.Controllers
 {
-    [Route("api/users")]
     [ApiController]
+    [Authorize]
+    [Route("api/users")]
     public class UserController : ControllerBase
     {
         private readonly IStatusRepository statusRepository;
@@ -37,8 +39,13 @@ namespace StatusCodes.API.Controllers
         [HttpPost("new")]
         public ActionResult NewUser(string firstname, string lastname, string email, bool isadmin, string password)
         {
-            var newuser = statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
-            return Ok(newuser);
+            if(statusRepository.ValidateUser(new AuthRequest { UserName = email, Password = password }) == String.Empty)
+            {
+                var newuser = statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
+                return Ok(newuser);
+
+            }
+            return BadRequest("A user with that email already exist!");
         }
     }
 }

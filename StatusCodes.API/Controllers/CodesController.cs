@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StatusCodes.API.Models;
 
 namespace StatusCodes.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/codes")]
     public class CodesController : ControllerBase
     {
