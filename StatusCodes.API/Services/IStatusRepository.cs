@@ -10,6 +10,7 @@ namespace StatusCodes.API.Services
         IEnumerable<User> GetUsers();
         User GetUser(string username);
         User NewUser(User user, string password);
+        User UpdateUser(User user);
         string ValidateUser(AuthRequest creds);
         bool InvalidateUser(List<Claim> claims);
         bool DeleterUser(string email);
