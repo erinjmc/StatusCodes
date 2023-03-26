@@ -24,7 +24,7 @@ namespace StatusCodes.API.Controllers
             var codes = _statusRepository.GetUsers();
             if (codes == null)
             {
-                return BadRequest("Record not found!");
+                return NotFound("Record not found!");
             }
             return Ok(codes);
         }
@@ -35,7 +35,7 @@ namespace StatusCodes.API.Controllers
             var user = _statusRepository.GetUser(username);
             if (user == null)
             {
-                return BadRequest("Record not found!");
+                return NotFound("Record not found!");
             }
             return Ok(user);
         }
