@@ -35,7 +35,7 @@ namespace StatusCodes.API.Controllers
             {
                 return Ok(result);
             }
-            return NoContent();
+            return BadRequest(result);
         }
 
     }
