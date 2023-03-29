@@ -7,16 +7,16 @@ namespace StatusCodes.API.Controllers
     [ApiController]
     [Authorize]
     [Route("api")]
-    public class CodesController : ControllerBase
+    public class StatusController : ControllerBase
     {
         private readonly IStatusRepository _statusRepository;
 
-        public CodesController(IStatusRepository statusRepository)
+        public StatusController(IStatusRepository statusRepository)
         {
             _statusRepository = statusRepository;
         }
 
-        [HttpGet("get/codes")]
+        [HttpGet("codes")]
         public ActionResult Codes()
         {
             var codes = _statusRepository.GetCodes();

@@ -27,26 +27,26 @@ namespace StatusCodes.API.Services
         }
 
 
-        public ResultDto GetCodes()
+        public async Task<ResultDto> GetCodes()
         {
             var response = new ResultDto { Message = "GetCodes" };
-            var codes = _context.StatusCodes.ToList();
+            var codes = await _context.StatusCodes.ToListAsync();
 
-            if(codes != null)
+            if (codes != null)
             {
                 response.Body = codes;
                 response.IsSuccess = true;
-
+                return response;
             }
-            
+
             response.IsSuccess = false;
             return response;
         }
 
-        public ResultDto GetTokens()
+        public async Task<ResultDto> GetTokens()
         {
             var response = new ResultDto { Message = "GetTokens" };
-            var tokens = _context.Tokens.ToList();
+            var tokens = await _context.Tokens.ToListAsync();
 
             if (tokens != null)
             {
@@ -59,10 +59,10 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto GetToken(int id)
+        public async Task<ResultDto> GetToken(TokenDto findToken)
         {
-            var response = new ResultDto { Message = $"GetToken token id = {id}" };
-            var token = _context.Tokens.SingleOrDefault(t => t.Id == id);
+            var response = new ResultDto { Message = $"GetToken token id {findToken.Id}" };
+            var token = await _context.Tokens.SingleOrDefaultAsync(t => t.Id == findToken.Id);
 
             if(token != null)
             {
@@ -75,10 +75,10 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto DeleteToken(int id) 
+        public ResultDto DeleteToken(TokenDto findToken) 
         {
-            var response = new ResultDto { Message = $"DeleteToken token id = {id}" };
-            var token = _context.Tokens.SingleOrDefault(t =>t.Id == id);
+            var response = new ResultDto { Message = $"DeleteToken token id = {findToken.Id}" };
+            var token = _context.Tokens.SingleOrDefault(t =>t.Id == findToken.Id);
             if (token != null) {
                 try
                 {
@@ -116,10 +116,10 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto GetUsers()
+        public async Task<ResultDto> GetUsers()
         {
             var response = new ResultDto { Message = "GetUsers" };
-            var users = _context.Users.ToList();
+            var users = await _context.Users.ToListAsync();
             if(users != null)
             {       
                 response.Body = users;
@@ -130,10 +130,10 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto GetUser(int id)
+        public async Task<ResultDto> GetUser(UserDto findUser)
         {
             var response = new ResultDto { Message = "GetUserById" };
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == findUser.Id);
             if (user != null)
             {
                 response.Body = user;
@@ -144,11 +144,12 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto NewUser(User user, string password)
+        public ResultDto NewUser(UserDto newRecord)
         {
             var response = new ResultDto { Message = "NewUser" };
+            var user = new User { FirstName = newRecord.FirstName, LastName = newRecord.LastName, Email = newRecord.Email.ToLower(), IsAdmin = newRecord.PromoteAdmin };
             user.Salt = Guid.NewGuid().ToString();
-            user.HashedPassword = ComputeSha256Hash(password + user.Salt);
+            user.HashedPassword = ComputeSha256Hash(newRecord.NewPassword + user.Salt);
 
             try
             {
@@ -170,28 +171,41 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto UpdateUser(User updatedUserRecord, string? password)
+        public ResultDto UpdateUser(UserDto changedRecord)
         {
             var response = new ResultDto { Message = "UpdateUser" };
-            if (password != null)
-            {
-                updatedUserRecord.HashedPassword = ComputeSha256Hash(password);
-            }
             try
             {
-                var currentUserRocord = _context.Users.FirstOrDefault(u => u.Id == updatedUserRecord.Id);
-                if (currentUserRocord != null)
+                var currentRocord = _context.Users.FirstOrDefault(u => u.Id == changedRecord.Id);
+                if (currentRocord != null)
                 {
-                    currentUserRocord.FirstName = updatedUserRecord.FirstName;
-                    currentUserRocord.LastName = updatedUserRecord.LastName;
-                    currentUserRocord.Email = updatedUserRecord.Email;
-                    currentUserRocord.IsAdmin = updatedUserRecord.IsAdmin;
-                    if(password != null) 
+                    if(currentRocord.FirstName != changedRecord.FirstName && changedRecord.FirstName != string.Empty)
                     {
-                        currentUserRocord.HashedPassword = updatedUserRecord.HashedPassword;
+                        currentRocord.FirstName = changedRecord.FirstName;
+                    }
+
+                    if( currentRocord.LastName != changedRecord.LastName && changedRecord.LastName != string.Empty)
+                    {
+                        currentRocord.LastName = changedRecord.LastName;
+                    }
+
+                    if (currentRocord.Email != changedRecord.Email && changedRecord.Email != string.Empty)
+                    {
+                        currentRocord.Email = changedRecord.Email;
+                    }
+
+                    if (changedRecord.PromoteAdmin)
+                    {
+                        currentRocord.IsAdmin = !currentRocord.IsAdmin;
+                    }
+
+                    if(!changedRecord.NewPassword.IsNullOrEmpty()) 
+                    {
+                        currentRocord.HashedPassword = ComputeSha256Hash(changedRecord.NewPassword);
                     }
                     _context.SaveChanges();
-                    response.Body = _context.Users.FirstOrDefault(u => u.Id == updatedUserRecord.Id); ;
+                    var result = _context.Users.FirstOrDefault(u => u.Id == changedRecord.Id);
+                    response.Body = result;
                     response.IsSuccess = true;
                     return response;
                 }
@@ -204,20 +218,23 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto DeleteUser(int id)
+        public ResultDto DeleteUser(UserDto findUser)
         {
             var response = new ResultDto { Message = "DeleteUser" };
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            try
+            var user = _context.Users.FirstOrDefault(u => u.Id == findUser.Id);
+            if (user != null)
             {
-                _context.Users.Remove(user);
-                _context.SaveChanges();
-                response.IsSuccess = true;
-                return response;
-            }
-            catch (Exception ex) 
-            {
-                response.Body = ex.Message;
+                try
+                {
+                    _context.Users.Remove(user);
+                    _context.SaveChanges();
+                    response.IsSuccess = true;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Body = ex.Message;
+                }
             }
             response.IsSuccess = _context.Users.Contains(user);
             return response;
@@ -287,10 +304,10 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public ResultDto InvalidateUser(int id)
+        public ResultDto InvalidateUser(UserDto findUser)
         {
             var response = new ResultDto { Message = "InvalidateUser" };
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user = _context.Users.FirstOrDefault(u => u.Id == findUser.Id);
             if (user != null)
             {
                 try

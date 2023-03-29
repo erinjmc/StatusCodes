@@ -11,11 +11,6 @@ namespace StatusCodes.API.Entities
         public string Salt { get; set; }
         public string HashedPassword { get; set; }
         public bool IsAdmin { get; set; }
-        public ICollection<Token> Tokens;
-
-        public User()
-        {
-            Tokens = new List<Token>();
-        }
+        public ICollection<Token> Tokens = new List<Token>();
     }
 }

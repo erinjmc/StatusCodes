@@ -19,10 +19,10 @@ namespace StatusCodes.API.Controllers
         }
 
 
-        [HttpGet("get/users")]
-        public ActionResult GetUsers()
+        [HttpGet("users")]
+        public async Task<ActionResult> GetUsers()
         {
-            var response = _statusRepository.GetUsers();
+            var response = await _statusRepository.GetUsers();
             if (response.IsSuccess)
             {
                 return Ok(response); 
@@ -30,10 +30,10 @@ namespace StatusCodes.API.Controllers
             return NotFound(response);
         }
 
-        [HttpGet("get/user")]
-        public ActionResult GetUser(int id)
+        [HttpGet("user")]
+        public async Task<ActionResult> GetUser(UserDto findUser)
         {
-            var response = _statusRepository.GetUser(id);
+            var response = await _statusRepository.GetUser(findUser);
             if (response == null)
             {
                 return Ok(response);
@@ -42,13 +42,13 @@ namespace StatusCodes.API.Controllers
             
         }
 
-        [HttpPost("new/user")]
-        public ActionResult NewUser(string firstname, string lastname, string email, bool isadmin, string password)
+        [HttpPost("user")]
+        public ActionResult NewUser(UserDto newRecord)
         {
-            var response = _statusRepository.ValidateUser(new AuthReqDto { UserName = email, Password = password });
+            var response = _statusRepository.ValidateUser(new AuthReqDto { UserName = newRecord.Email, Password = newRecord.NewPassword });
             if (response.ErrorCode == 2)
             {
-                response = _statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
+                response = _statusRepository.NewUser(newRecord);
                 return Ok(response);
 
             }
@@ -66,11 +66,10 @@ namespace StatusCodes.API.Controllers
             return BadRequest(response);
         }
 
-        [HttpPost("update/user")]
-        public ActionResult UpdateUser(int id, string firstname, string lastname, string email, bool isadmin, string? password) 
+        [HttpPatch("user")]
+        public ActionResult UpdateUser(UserDto changedRecord) 
         {
-            User user = new User { Id = id, FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin };
-            var response = _statusRepository.UpdateUser(user, password);
+            var response = _statusRepository.UpdateUser(changedRecord);
             if (response.IsSuccess)
             {
                 return Ok(response);
@@ -78,59 +77,15 @@ namespace StatusCodes.API.Controllers
             return BadRequest(response);
         }
 
-        [HttpDelete("remove/user")]
-        public ActionResult DeleteUser(int userId)
+        [HttpDelete("user")]
+        public ActionResult DeleteUser(UserDto findUser)
         {
-            var result = _statusRepository.DeleteUser(userId);
+            var result = _statusRepository.DeleteUser(findUser);
             if(result.IsSuccess)
             {
                 return Ok(result);
             }
             return BadRequest(result);
-        }
-
-        [HttpGet("get/tokens")]
-        public ActionResult GetTokens()
-        {
-            var result = _statusRepository.GetTokens();
-            if (result.IsSuccess)
-            {
-                return Ok(result);
-            }
-            return NotFound(result);
-        }
-
-        [HttpGet("get/token")]
-        public ActionResult GetToken(int id)
-        {
-            var result = _statusRepository.GetToken(id);
-            if (result.IsSuccess)
-            {
-                return Ok(result);
-            }
-            return NotFound(result);
-        }
-
-        [HttpDelete("remove/token")]
-        public ActionResult DeleteToken(int id)
-        {
-            var result = _statusRepository.DeleteToken(id);
-            if (result.IsSuccess)
-            {
-                return Ok(result);
-            }
-            return NotFound(result);
-        }
-
-        [HttpDelete("clear/tokens")]
-        public ActionResult DeleteAlTokens()
-        {
-            var result = _statusRepository.DeleteAllTokens();
-            if (result.IsSuccess)
-            {
-                return Ok(result);
-            }
-            return NotFound(result);
         }
     }
 }

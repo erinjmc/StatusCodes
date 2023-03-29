@@ -1,6 +1,6 @@
-﻿namespace StatusCodes.API.Models
+﻿namespace StatusCodes.API.Entities
 {
-    public class StatusCode
+    public class Status
     {
         public int Id { get; set; }
         public int PlatformCode { get; set; }

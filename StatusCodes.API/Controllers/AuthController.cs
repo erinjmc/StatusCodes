@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace StatusCodes.API.Controllers
 {
-    [Route("api/auth")]
+    [Route("api")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -17,9 +17,9 @@ namespace StatusCodes.API.Controllers
         }
       
         [HttpPost("logon")]
-        public ActionResult Logon(string username, string password)
+        public ActionResult Logon(AuthReqDto loginReq)
         {
-            var result = _statusRepository.AuthLogonUser(new AuthReqDto { UserName = username.ToLower(), Password = password });
+            var result = _statusRepository.AuthLogonUser(loginReq);
             if (!result.IsSuccess)
             {
                 return Unauthorized(result);
@@ -28,9 +28,9 @@ namespace StatusCodes.API.Controllers
         }
 
         [HttpPost("logout")] 
-        public ActionResult Logout(int id)
+        public ActionResult Logout(UserDto findUser)
         {
-            var result = _statusRepository.InvalidateUser(id);
+            var result = _statusRepository.InvalidateUser(findUser);
             if (result.IsSuccess)
             {
                 return Ok(result);

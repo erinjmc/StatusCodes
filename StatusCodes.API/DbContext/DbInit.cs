@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StatusCodes.API.Entities;
 using StatusCodes.API.Models;
 using System.Security.Cryptography;
 using System.Text;
@@ -27,7 +28,7 @@ namespace StatusCodes.API.DbContext
                             {
                                 foreach (InitCode c in items)
                                 {
-                                    context.StatusCodes.Add(new StatusDto { Code = c.Code, Description = c.Desc, Platform = c.Platform, PlatformCode = c.PlatformCode });
+                                    context.StatusCodes.Add(new Status { Code = c.Code, Description = c.Desc, Platform = c.Platform, PlatformCode = c.PlatformCode });
                                 }
                                 context.SaveChanges();
                             }
