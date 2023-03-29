@@ -7,6 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using StatusCodes.API.Models;
+using Microsoft.VisualBasic;
+using Azure;
+using StatusCodes.API.Models;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace StatusCodes.API.Services
 {
@@ -21,77 +26,292 @@ namespace StatusCodes.API.Services
             _configuration = configuration;
         }
 
-        public IEnumerable<StatusCode> GetCodes()
-        {
-            return _context.StatusCodes.ToList();
-        }
 
-        public IEnumerable<User> GetUsers()
+        public Result GetCodes()
         {
-            return _context.Users.ToList();
-        }
+            var response = new Result { Message = "GetCodes" };
+            var codes = _context.StatusCodes.ToList();
 
-        public User GetUser(string email)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Email == email);
-            return user;
-        }
-
-        public User NewUser(User user, string password)
-        {
-            user.HashedPassword = ComputeSha256Hash(password + user.Email);
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return user;
-        }
-
-        public User UpdateUser(User user)
-        {
-            //todo
-            return user;
-        }
-
-        public bool DeleterUser(string email)
-        {
-            var user = GetUser(email);
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return _context.Users.Contains(user);
-        }
-
-        public string ValidateUser(AuthRequest creds)
-        {
-            string token = string.Empty;
-            if (!string.IsNullOrEmpty(creds.Password) && !string.IsNullOrEmpty(creds.UserName))
+            if(codes != null)
             {
-                var user = GetUser(creds.UserName);
+                response.Body = codes;
+                response.IsSuccess = true;
+
+            }
+            
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result GetTokens()
+        {
+            var response = new Result { Message = "GetTokens" };
+            var tokens = _context.Tokens.ToList();
+
+            if (tokens != null)
+            {
+                response.Body = tokens;
+                response.IsSuccess = true;
+                return response;
+            }
+
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result GetToken(int id)
+        {
+            var response = new Result { Message = $"GetToken token id = {id}" };
+            var token = _context.Tokens.SingleOrDefault(t => t.Id == id);
+
+            if(token != null)
+            {
+                response.Body = token;
+                response.IsSuccess = true;
+                return response;
+            }
+
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result DeleteToken(int id) 
+        {
+            var response = new Result { Message = $"DeleteToken token id = {id}" };
+            var token = _context.Tokens.SingleOrDefault(t =>t.Id == id);
+            if (token != null) {
+                try
+                {
+                    _context.Tokens.Remove(token);
+                    _context.SaveChanges();
+                    response.IsSuccess = true;
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    response.Message += ex.Message; 
+                }
+            }
+            response.IsSuccess = false;
+            return response;
+        }
+        
+        public Result DeleteAllTokens()
+        {
+            var response = new Result { Message = "DeleteAllTokens token" };
+            try
+            {
+                var tokens = _context.Tokens.ToList();
+                _context.Tokens.RemoveRange(tokens);
+                _context.SaveChanges();
+                response.IsSuccess = true;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Message += ex.Message;
+            }
+ 
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result GetUsers()
+        {
+            var response = new Result { Message = "GetUsers" };
+            var users = _context.Users.ToList();
+            if(users != null)
+            {       
+                response.Body = users;
+                response.IsSuccess = true;
+                return response;
+            }
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result GetUser(int id)
+        {
+            var response = new Result { Message = "GetUserById" };
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                response.Body = user;
+                response.IsSuccess = true;
+                return response;
+            }
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result NewUser(User user, string password)
+        {
+            var response = new Result { Message = "NewUser" };
+            user.Salt = Guid.NewGuid().ToString();
+            user.HashedPassword = ComputeSha256Hash(password + user.Salt);
+
+            try
+            {
+                _context.Users.Add(user);
+                _context.SaveChanges();
 
                 if (user != null)
                 {
-                    if (user.HashedPassword == ComputeSha256Hash(creds.Password + creds.UserName))
+                    response.Body = user;
+                    response.IsSuccess = true;
+                    return response;
+                }
+            }
+            catch(Exception ex)
+            {
+                response.Body = ex.Message;
+            }
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result UpdateUser(User updatedUserRecord, string? password)
+        {
+            var response = new Result { Message = "UpdateUser" };
+            if (password != null)
+            {
+                updatedUserRecord.HashedPassword = ComputeSha256Hash(password);
+            }
+            try
+            {
+                var currentUserRocord = _context.Users.FirstOrDefault(u => u.Id == updatedUserRecord.Id);
+                if (currentUserRocord != null)
+                {
+                    currentUserRocord.FirstName = updatedUserRecord.FirstName;
+                    currentUserRocord.LastName = updatedUserRecord.LastName;
+                    currentUserRocord.Email = updatedUserRecord.Email;
+                    currentUserRocord.IsAdmin = updatedUserRecord.IsAdmin;
+                    if(password != null) 
                     {
-                        token = BuildToken(user);
-                        _context.Tokens.Add(new Token { Email = user.Email, TokenStr = token });
-                        _context.SaveChanges();
+                        currentUserRocord.HashedPassword = updatedUserRecord.HashedPassword;
+                    }
+                    _context.SaveChanges();
+                    response.Body = _context.Users.FirstOrDefault(u => u.Id == updatedUserRecord.Id); ;
+                    response.IsSuccess = true;
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message += ex.Message;
+            }
+            response.IsSuccess = false;
+            return response;
+        }
+
+        public Result DeleteUser(int id)
+        {
+            var response = new Result { Message = "DeleteUser" };
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            try
+            {
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                response.IsSuccess = true;
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                response.Body = ex.Message;
+            }
+            response.IsSuccess = _context.Users.Contains(user);
+            return response;
+        }
+
+        public Result ValidateUser(AuthRequest creds) 
+        {
+            var response = new Result { Message = "ValidateUser" };
+            if (string.IsNullOrEmpty(creds.Password) || string.IsNullOrEmpty(creds.UserName))
+            {
+                response.IsSuccess = false;
+                response.ErrorCode = 1;
+                response.Message += " - Missing username and / or password";
+                return response;
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == creds.UserName);
+
+            if (user == null)
+            {
+                response.ErrorCode = 2;
+                response.Message += " - No such user";
+                response.IsSuccess = false;
+                return response;
+            }
+
+            response.ErrorCode = 0;
+            response.Message += " - User found";
+            response.IsSuccess = true;
+            response.Body = user;
+            return response;
+        }
+
+        public Result AuthLogonUser(AuthRequest creds)
+        {
+            var response = ValidateUser(creds);
+            if(response.Body != null)
+            {
+                var user = (User)response.Body;
+                if (user != null)
+                {
+                    try
+                    {
+                        if (user.HashedPassword == ComputeSha256Hash(creds.Password + user.Salt))
+                        {
+                            var token = BuildToken(user);
+                            if (token != null)
+                            {
+                                _context.Tokens.Add(new Token { UserId = user.Id, Email = user.Email, TokenStr = token });
+                                _context.SaveChanges();
+                                response.Body = token;
+                                response.IsSuccess = true;
+                                return response;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        response.Message += ex.Message;
                     }
                 }
             }
-            return token;
+
+            
+            
+            response.IsSuccess = false;
+            return response;
         }
 
-        public bool InvalidateUser(List<Claim> claims)
+        public Result InvalidateUser(int id)
         {
-            var username = claims.FirstOrDefault(c => c.Type == "username");
-            var user = GetUser(username.Value.ToString());
-            if (user != null && user.Tokens.Count > 0)
+            var response = new Result { Message = "InvalidateUser" };
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
             {
-                user.Tokens.Clear();
-                return user.Tokens.Count == 0;
+                try
+                {
+                    var cleaning = _context.Tokens.Where(t => t.UserId == user.Id).ToList();
+                    _context.Tokens.RemoveRange(cleaning);
+                    _context.SaveChanges();
+                    response.IsSuccess = true;
+                    return response;
+
+                } catch (Exception ex)
+                {
+                    response.Message += ex.Message;
+                }
+                
+                response.IsSuccess = user.Tokens.Count == 0;
             }
-            return false;
+            return response;
         }
 
-        private string ComputeSha256Hash(string hash)
+        public string ComputeSha256Hash(string hash)
         {
             string hashedPassword;
             using (SHA256 sha256Hash = SHA256.Create())

@@ -18,55 +18,118 @@ namespace StatusCodes.API.Controllers
         }
 
 
-        [HttpGet("users")]
+        [HttpGet("get/users")]
         public ActionResult GetUsers()
         {
-            var codes = _statusRepository.GetUsers();
-            if (codes == null)
+            var response = _statusRepository.GetUsers();
+            if (response.IsSuccess)
             {
-                return NotFound("No users were found!");
+                return Ok(response); 
             }
-            return Ok(codes);
+            return NotFound(response);
         }
 
-        [HttpGet("user")]
-        public ActionResult GetUser(string username)
+        [HttpGet("get/user")]
+        public ActionResult GetUser(int id)
         {
-            var user = _statusRepository.GetUser(username);
-            if (user == null)
+            var response = _statusRepository.GetUser(id);
+            if (response == null)
             {
-                return NotFound("Record not found!");
+                return Ok(response);
             }
-            return Ok(user);
+            return NotFound(response);
+            
         }
 
-        [HttpPost("user/new")]
+        [HttpPost("new/user")]
         public ActionResult NewUser(string firstname, string lastname, string email, bool isadmin, string password)
         {
-            if(_statusRepository.ValidateUser(new AuthRequest { UserName = email, Password = password }) == String.Empty)
+            var response = _statusRepository.ValidateUser(new AuthRequest { UserName = email, Password = password });
+            if (response.ErrorCode == 2)
             {
-                var newuser = _statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
-                return Ok(newuser);
+                response = _statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);
+                return Ok(response);
 
             }
-            return BadRequest("A user with that email already exist!");
-        }
-
-        [HttpPut("user")]
-        public ActionResult UpdateUser(User user) 
-        {
-            var newuser = _statusRepository.UpdateUser(user);
-            return Ok();
-        }
-
-        [HttpDelete("user")]
-        public ActionResult DeleteUser(string username)
-        {
-            if(_statusRepository.DeleterUser(username))
+            if(response.ErrorCode == 1) 
             {
-                return Ok();
+                response.IsSuccess = false;
+                response.Body = new { };
+                response.Message = "Username and password is required";
+                return BadRequest(response);
             }
-            return BadRequest();
+            response.IsSuccess = false;
+            response.ErrorCode = 3;
+            response.Body = new { };
+            response.Message = "Username allready in use!";
+            return BadRequest(response);
+        }
+
+        [HttpPost("update/user")]
+        public ActionResult UpdateUser(int id, string firstname, string lastname, string email, bool isadmin, string? password) 
+        {
+            User user = new User { Id = id, FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin };
+            var response = _statusRepository.UpdateUser(user, password);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpDelete("remove/user")]
+        public ActionResult DeleteUser(int userId)
+        {
+            var result = _statusRepository.DeleteUser(userId);
+            if(result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("get/tokens")]
+        public ActionResult GetTokens()
+        {
+            var result = _statusRepository.GetTokens();
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+        [HttpGet("get/token")]
+        public ActionResult GetToken(int id)
+        {
+            var result = _statusRepository.GetToken(id);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+        [HttpDelete("remove/token")]
+        public ActionResult DeleteToken(int id)
+        {
+            var result = _statusRepository.DeleteToken(id);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+        [HttpDelete("clear/tokens")]
+        public ActionResult DeleteAlTokens()
+        {
+            var result = _statusRepository.DeleteAllTokens();
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
         }
     }
 }

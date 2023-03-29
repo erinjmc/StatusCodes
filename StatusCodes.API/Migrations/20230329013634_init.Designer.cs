@@ -11,8 +11,8 @@ using StatusCodes.API.DbContext;
 namespace StatusCodes.API.Migrations
 {
     [DbContext(typeof(StatusCodesDbContext))]
-    [Migration("20230326042839_tokentable")]
-    partial class tokentable
+    [Migration("20230329013634_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,12 +58,14 @@ namespace StatusCodes.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TokenStr")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

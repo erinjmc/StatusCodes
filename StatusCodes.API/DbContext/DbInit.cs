@@ -35,8 +35,9 @@ namespace StatusCodes.API.DbContext
                     }
                     if (!context.Users.Any())
                     {
-                        var hashedPasasword = ComputeSha256Hash("password"+ "admin@admin.com");
-                        var newuser = new User { FirstName = "Admin", LastName = "Admin", Email = "admin@admin.com", IsAdmin = true, HashedPassword = hashedPasasword };
+                        var newuser = new User { FirstName = "Admin", LastName = "Admin", Email = "admin@admin.com", IsAdmin = true, Salt = Guid.NewGuid().ToString() };
+                        var hashedPasasword = ComputeSha256Hash("password"+ newuser.Salt);
+                        newuser.HashedPassword = hashedPasasword;
                         context.Users.Add(newuser);
                         context.SaveChanges();
                     }

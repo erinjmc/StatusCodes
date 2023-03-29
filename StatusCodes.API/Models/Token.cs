@@ -7,8 +7,9 @@ namespace StatusCodes.API.Models
     public class Token
     {
         public int Id { get; set; }
-        [ForeignKey("Email")]
-        public string Email { get; set; }
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+        public string? Email { get; set; }
         public string? TokenStr { get; set; }
     }
 }

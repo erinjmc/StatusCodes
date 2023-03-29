@@ -5,24 +5,25 @@
 namespace StatusCodes.API.Migrations
 {
     /// <inheritdoc />
-    public partial class tokentable3 : Migration
+    public partial class newsalt : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Username",
-                table: "Tokens",
-                newName: "Email");
+            migrationBuilder.AddColumn<string>(
+                name: "Salt",
+                table: "Users",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Email",
-                table: "Tokens",
-                newName: "Username");
+            migrationBuilder.DropColumn(
+                name: "Salt",
+                table: "Users");
         }
     }
 }

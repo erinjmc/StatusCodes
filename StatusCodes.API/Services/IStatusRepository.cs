@@ -6,13 +6,18 @@ namespace StatusCodes.API.Services
 {
     public interface IStatusRepository
     {
-        IEnumerable<StatusCode> GetCodes();
-        IEnumerable<User> GetUsers();
-        User GetUser(string username);
-        User NewUser(User user, string password);
-        User UpdateUser(User user);
-        string ValidateUser(AuthRequest creds);
-        bool InvalidateUser(List<Claim> claims);
-        bool DeleterUser(string email);
+        Result GetCodes();
+        Result GetTokens();
+        Result GetToken(int id);
+        Result DeleteToken(int id);
+        Result DeleteAllTokens();
+        Result GetUsers();
+        Result GetUser(int id);
+        Result NewUser(User user, string password);
+        Result UpdateUser(User user, string? password);
+        Result ValidateUser(AuthRequest creds);
+        Result AuthLogonUser(AuthRequest creds);
+        Result InvalidateUser(int id);
+        Result DeleteUser(int id);
     }
 }
