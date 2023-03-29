@@ -1,6 +1,6 @@
 ﻿namespace StatusCodes.API.Models
 {
-    public class Result: IResult
+    public class ResultDto
     {
         public bool IsSuccess { get; set; }
         public int ErrorCode { get; set; }

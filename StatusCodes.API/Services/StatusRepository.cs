@@ -9,9 +9,9 @@ using System.IdentityModel.Tokens.Jwt;
 using StatusCodes.API.Models;
 using Microsoft.VisualBasic;
 using Azure;
-using StatusCodes.API.Models;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using StatusCodes.API.Entities;
 
 namespace StatusCodes.API.Services
 {
@@ -27,9 +27,9 @@ namespace StatusCodes.API.Services
         }
 
 
-        public Result GetCodes()
+        public ResultDto GetCodes()
         {
-            var response = new Result { Message = "GetCodes" };
+            var response = new ResultDto { Message = "GetCodes" };
             var codes = _context.StatusCodes.ToList();
 
             if(codes != null)
@@ -43,9 +43,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result GetTokens()
+        public ResultDto GetTokens()
         {
-            var response = new Result { Message = "GetTokens" };
+            var response = new ResultDto { Message = "GetTokens" };
             var tokens = _context.Tokens.ToList();
 
             if (tokens != null)
@@ -59,9 +59,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result GetToken(int id)
+        public ResultDto GetToken(int id)
         {
-            var response = new Result { Message = $"GetToken token id = {id}" };
+            var response = new ResultDto { Message = $"GetToken token id = {id}" };
             var token = _context.Tokens.SingleOrDefault(t => t.Id == id);
 
             if(token != null)
@@ -75,9 +75,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result DeleteToken(int id) 
+        public ResultDto DeleteToken(int id) 
         {
-            var response = new Result { Message = $"DeleteToken token id = {id}" };
+            var response = new ResultDto { Message = $"DeleteToken token id = {id}" };
             var token = _context.Tokens.SingleOrDefault(t =>t.Id == id);
             if (token != null) {
                 try
@@ -96,9 +96,9 @@ namespace StatusCodes.API.Services
             return response;
         }
         
-        public Result DeleteAllTokens()
+        public ResultDto DeleteAllTokens()
         {
-            var response = new Result { Message = "DeleteAllTokens token" };
+            var response = new ResultDto { Message = "DeleteAllTokens token" };
             try
             {
                 var tokens = _context.Tokens.ToList();
@@ -116,9 +116,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result GetUsers()
+        public ResultDto GetUsers()
         {
-            var response = new Result { Message = "GetUsers" };
+            var response = new ResultDto { Message = "GetUsers" };
             var users = _context.Users.ToList();
             if(users != null)
             {       
@@ -130,9 +130,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result GetUser(int id)
+        public ResultDto GetUser(int id)
         {
-            var response = new Result { Message = "GetUserById" };
+            var response = new ResultDto { Message = "GetUserById" };
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user != null)
             {
@@ -144,9 +144,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result NewUser(User user, string password)
+        public ResultDto NewUser(User user, string password)
         {
-            var response = new Result { Message = "NewUser" };
+            var response = new ResultDto { Message = "NewUser" };
             user.Salt = Guid.NewGuid().ToString();
             user.HashedPassword = ComputeSha256Hash(password + user.Salt);
 
@@ -170,9 +170,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result UpdateUser(User updatedUserRecord, string? password)
+        public ResultDto UpdateUser(User updatedUserRecord, string? password)
         {
-            var response = new Result { Message = "UpdateUser" };
+            var response = new ResultDto { Message = "UpdateUser" };
             if (password != null)
             {
                 updatedUserRecord.HashedPassword = ComputeSha256Hash(password);
@@ -204,9 +204,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result DeleteUser(int id)
+        public ResultDto DeleteUser(int id)
         {
-            var response = new Result { Message = "DeleteUser" };
+            var response = new ResultDto { Message = "DeleteUser" };
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             try
             {
@@ -223,9 +223,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result ValidateUser(AuthRequest creds) 
+        public ResultDto ValidateUser(AuthReqDto creds) 
         {
-            var response = new Result { Message = "ValidateUser" };
+            var response = new ResultDto { Message = "ValidateUser" };
             if (string.IsNullOrEmpty(creds.Password) || string.IsNullOrEmpty(creds.UserName))
             {
                 response.IsSuccess = false;
@@ -251,7 +251,7 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result AuthLogonUser(AuthRequest creds)
+        public ResultDto AuthLogonUser(AuthReqDto creds)
         {
             var response = ValidateUser(creds);
             if(response.Body != null)
@@ -287,9 +287,9 @@ namespace StatusCodes.API.Services
             return response;
         }
 
-        public Result InvalidateUser(int id)
+        public ResultDto InvalidateUser(int id)
         {
-            var response = new Result { Message = "InvalidateUser" };
+            var response = new ResultDto { Message = "InvalidateUser" };
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user != null)
             {

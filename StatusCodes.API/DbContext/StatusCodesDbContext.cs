@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using StatusCodes.API.Entities;
 using StatusCodes.API.Models;
 
 namespace StatusCodes.API.DbContext

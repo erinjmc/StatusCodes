@@ -27,7 +27,7 @@ namespace StatusCodes.API.DbContext
                             {
                                 foreach (InitCode c in items)
                                 {
-                                    context.StatusCodes.Add(new StatusCode { Code = c.Code, Description = c.Desc, Platform = c.Platform, PlatformCode = c.PlatformCode });
+                                    context.StatusCodes.Add(new StatusDto { Code = c.Code, Description = c.Desc, Platform = c.Platform, PlatformCode = c.PlatformCode });
                                 }
                                 context.SaveChanges();
                             }

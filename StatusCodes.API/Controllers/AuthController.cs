@@ -19,7 +19,7 @@ namespace StatusCodes.API.Controllers
         [HttpPost("logon")]
         public ActionResult Logon(string username, string password)
         {
-            var result = _statusRepository.AuthLogonUser(new AuthRequest { UserName = username.ToLower(), Password = password });
+            var result = _statusRepository.AuthLogonUser(new AuthReqDto { UserName = username.ToLower(), Password = password });
             if (!result.IsSuccess)
             {
                 return Unauthorized(result);

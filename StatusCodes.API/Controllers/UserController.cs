@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StatusCodes.API.Entities;
 using StatusCodes.API.Models;
 using StatusCodes.API.Services;
 
@@ -44,7 +45,7 @@ namespace StatusCodes.API.Controllers
         [HttpPost("new/user")]
         public ActionResult NewUser(string firstname, string lastname, string email, bool isadmin, string password)
         {
-            var response = _statusRepository.ValidateUser(new AuthRequest { UserName = email, Password = password });
+            var response = _statusRepository.ValidateUser(new AuthReqDto { UserName = email, Password = password });
             if (response.ErrorCode == 2)
             {
                 response = _statusRepository.NewUser(new User { FirstName = firstname, LastName = lastname, Email = email.ToLower(), IsAdmin = isadmin }, password);

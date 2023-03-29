@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StatusCodes.API.Models
+namespace StatusCodes.API.Entities
 {
     public class Token
     {

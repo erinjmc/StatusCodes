@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StatusCodes.API.Models
+namespace StatusCodes.API.Entities
 {
     public class User
     {
@@ -13,7 +13,7 @@ namespace StatusCodes.API.Models
         public bool IsAdmin { get; set; }
         public ICollection<Token> Tokens;
 
-        public User() 
+        public User()
         {
             Tokens = new List<Token>();
         }

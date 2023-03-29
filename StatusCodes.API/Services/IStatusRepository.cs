@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StatusCodes.API.Entities;
 using StatusCodes.API.Models;
 using System.Security.Claims;
 
